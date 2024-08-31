@@ -10,7 +10,7 @@ import { plus } from '../../utils/Icons';
 function Form() {
     const {addIncome, getIncomes, error, setError} = useGlobalContext()
     const [inputState, setInputState] = useState({
-        title: '',
+        title: 'Salary',
         amount: '',
         date: new Date (),
         category: "salary",
