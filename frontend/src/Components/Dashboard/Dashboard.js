@@ -146,10 +146,10 @@ const DashboardStyled = styled.div`
                     border: 2px solid #FFFFFF;
                     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
                     border-radius: 20px;
-                    padding: 1rem;
+                    padding: .7rem;
                     p{
-                        font-size: 3rem;
-                        font-weight: 700;
+                        font-size: 2rem;
+                        font-weight: 600;
                     }
                 }
                 .balance{
@@ -160,7 +160,7 @@ const DashboardStyled = styled.div`
                     align-items: center;
                     p{
                         opacity: 1;
-                        font-size: 3.5rem;
+                        font-size: 2.5rem;
                     }
                 }
             }
