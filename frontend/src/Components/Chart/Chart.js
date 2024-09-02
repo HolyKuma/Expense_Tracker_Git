@@ -34,7 +34,6 @@ function Chart({ viewMode }) {
 
     const getYearMonth = (date) => moment(date).format('YYYY-MM');
     const getMonthName = (date) => moment(date).format('MM/YYYY');
-    const getDay = (date) => moment(date).format('DD.MM');
 
     // Show data for the current month
     const showCurrentMonth = () => {
