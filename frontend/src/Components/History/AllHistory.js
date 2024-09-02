@@ -12,7 +12,7 @@ function AllHistory() {
         <HistoryStyled>
             <h2>Recent History</h2>
             {history.map((item) =>{
-                const {_id, title, amount, date, type} = item
+                const {_id, title, amount, date, description, type} = item
                 return (
                     <div key={_id} className="history-item">
                         <p style={{
@@ -21,8 +21,12 @@ function AllHistory() {
                             {title}                
                         </p>
                         <p> 
+                            {description} 
+                        </p>
+                        <p> 
                             {(dateFormat(date))} 
                         </p>
+
 
                         <p style={{
                             color: type === 'Expense' ? 'red' : 'green'
@@ -48,7 +52,9 @@ const HistoryStyled = styled.div`
         box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
         padding: 1rem;
         border-radius: 20px;
-        display: flex;
+        display: grid;
+        grid-template-rows:25px;
+        grid-template-columns: 300px 500px 350px; 
         justify-content: space-between;
         align-items: center;
     }
