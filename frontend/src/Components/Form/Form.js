@@ -28,7 +28,7 @@ function Form() {
         e.preventDefault()
         addIncome(inputState)
         setInputState({
-            title: '',
+            title: 'Salary',
             amount: '',
             date: new Date (),
             category: "salary",

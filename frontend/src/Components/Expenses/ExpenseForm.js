@@ -28,7 +28,7 @@ function ExpenseForm() {
         e.preventDefault()
         addExpense(inputState)
         setInputState({
-            title: '',
+            title: 'Groceries',
             amount: '',
             date: new Date (),
             category: 'groceries',

@@ -156,7 +156,9 @@ const IncomeItemStyled = styled.div`
         }
 
         .inner-content{
-            display: flex;
+            display: grid;
+            grid-template-rows:25px;
+            grid-template-columns: 650px 25px 50px; 
             justify-content: space-between;
             align-items: center;
             .text{

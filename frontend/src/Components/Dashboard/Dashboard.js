@@ -39,7 +39,7 @@ function Dashboard() {
                     moment(entry.date).isBetween(currentDate.clone().subtract(5, 'years'), currentDate, null, '[]')
                 );
                 break;
-            case 'fullYear':
+            case 'allYears':
                 filteredEntries = entries; // Gesamte Einträge
                 break;
             default:
@@ -75,7 +75,7 @@ function Dashboard() {
                             <button onClick={() => setViewMode('oneYear')}>1 Jahr</button>
                             <button onClick={() => setViewMode('threeYears')}>3 Jahre</button>
                             <button onClick={() => setViewMode('fiveYears')}>5 Jahre</button>
-                            <button onClick={() => setViewMode('fullYear')}>Gesamt Verlauf</button>
+                            <button onClick={() => setViewMode('allYears')}>Gesamt Verlauf</button>
                         </div>
                         <Chart viewMode={viewMode} />
                         <div className="amount-con">

@@ -58,7 +58,7 @@ function Chart({ viewMode }) {
     };
 
     // Show data for the full year
-    const showFullYear = () => {
+    const showAllYears = () => {
         const allYearMonths = [...incomes, ...expenses]
             .map(entry => getYearMonth(entry.date))
             .sort();
@@ -187,11 +187,11 @@ function Chart({ viewMode }) {
     // Auswahl der anzuzeigenden Daten basierend auf viewMode
     const { labels, incomeData, expenseData } =
         viewMode === 'currentMonth' ? showCurrentMonth() :
-        viewMode === 'fullYear' ? showFullYear() :
         viewMode === 'currentYear' ? showCurrentYear() :
         viewMode === 'oneYear' ? showOneYear() :
         viewMode === 'threeYears' ? showThreeYears() :
         viewMode === 'fiveYears' ? showFiveYears() :
+        viewMode === 'allYears' ? showAllYears() :
         showCurrentMonth(); // Default fallback zu currentMonth
 
     const data = {
