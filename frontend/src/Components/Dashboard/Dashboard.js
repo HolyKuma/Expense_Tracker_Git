@@ -9,31 +9,54 @@ import moment from 'moment';
 
 function Dashboard() {
     const { incomes, expenses, getIncomes, getExpenses } = useGlobalContext();
-
-    // Manage the view mode state here
+    
     const [viewMode, setViewMode] = useState('currentMonth');
 
-    const getTotalIncome = () => {
-        if (viewMode === 'currentMonth') {
-            const currentMonthIncomes = incomes.filter(income => moment(income.date).isSame(moment(), 'month'));
-            return currentMonthIncomes.reduce((sum, income) => sum + income.amount, 0);
-        } else {
-            return incomes.reduce((sum, income) => sum + income.amount, 0); // Full year
+    // Hilfsfunktion zur Berechnung des Gesamtbetrags für Einnahmen/Ausgaben je nach Zeitraum
+    const calculateTotal = (entries, timeFilter) => {
+        const currentDate = moment();
+        let filteredEntries = [];
+
+        switch (timeFilter) {
+            case 'currentMonth':
+                filteredEntries = entries.filter(entry => moment(entry.date).isSame(currentDate, 'month'));
+                break;
+            case 'currentYear':
+                filteredEntries = entries.filter(entry => moment(entry.date).year() === currentDate.year());
+                break;
+            case 'oneYear':
+                filteredEntries = entries.filter(entry =>
+                    moment(entry.date).isBetween(currentDate.clone().subtract(1, 'years'), currentDate, null, '[]')
+                );
+                break;
+            case 'threeYears':
+                filteredEntries = entries.filter(entry =>
+                    moment(entry.date).isBetween(currentDate.clone().subtract(3, 'years'), currentDate, null, '[]')
+                );
+                break;
+            case 'fiveYears':
+                filteredEntries = entries.filter(entry =>
+                    moment(entry.date).isBetween(currentDate.clone().subtract(5, 'years'), currentDate, null, '[]')
+                );
+                break;
+            case 'fullYear':
+                filteredEntries = entries; // Gesamte Einträge
+                break;
+            default:
+                filteredEntries = entries;
         }
+
+        return filteredEntries.reduce((sum, entry) => sum + entry.amount, 0);
     };
 
-    const getTotalExpenses = () => {
-        if (viewMode === 'currentMonth') {
-            const currentMonthExpenses = expenses.filter(expense => moment(expense.date).isSame(moment(), 'month'));
-            return currentMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
-        } else {
-            return expenses.reduce((sum, expense) => sum + expense.amount, 0); // Full year
-        }
-    };
+    // Berechnung des Gesamteinkommens basierend auf dem aktuellen viewMode
+    const getTotalIncome = () => calculateTotal(incomes, viewMode);
 
-    const getTotalBalance = () => {
-        return getTotalIncome() - getTotalExpenses();
-    };
+    // Berechnung der Gesamtausgaben basierend auf dem aktuellen viewMode
+    const getTotalExpenses = () => calculateTotal(expenses, viewMode);
+
+    // Berechnung des Gesamtsaldos
+    const getTotalBalance = () => getTotalIncome() - getTotalExpenses();
 
     useEffect(() => {
         getIncomes();
@@ -48,7 +71,11 @@ function Dashboard() {
                     <div className="chart-con">
                         <div className="view-mode-buttons">
                             <button onClick={() => setViewMode('currentMonth')}>Aktueller Monat</button>
-                            <button onClick={() => setViewMode('fullYear')}>Ganzes Jahr</button>
+                            <button onClick={() => setViewMode('currentYear')}>Aktuelles Jahr</button>
+                            <button onClick={() => setViewMode('oneYear')}>1 Jahr</button>
+                            <button onClick={() => setViewMode('threeYears')}>3 Jahre</button>
+                            <button onClick={() => setViewMode('fiveYears')}>5 Jahre</button>
+                            <button onClick={() => setViewMode('fullYear')}>Gesamt Verlauf</button>
                         </div>
                         <Chart viewMode={viewMode} />
                         <div className="amount-con">
