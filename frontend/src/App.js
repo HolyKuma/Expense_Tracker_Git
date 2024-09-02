@@ -5,6 +5,7 @@ import Orb from "./Components/Orb/Orb";
 import Navigation from "./Components/Navigation/Navigation";
 import { useMemo, useState } from "react";
 import Dashboard from './Components/Dashboard/Dashboard';
+import Transactions from './Components/Transactions/Transactions';
 import Income from './Components/Income/Income';
 import Expenses from './Components/Expenses/Expenses';
 import { useGlobalContext } from "./context/globalContext";
@@ -20,7 +21,7 @@ function App() {
       case 1:
         return <Dashboard />
       case 2:
-        return <Dashboard />
+        return <Transactions/>
       case 3:
         return <Income />
       case 4:

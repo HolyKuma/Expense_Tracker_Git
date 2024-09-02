@@ -66,7 +66,7 @@ function Dashboard() {
     return (
         <DashboardStyled>
             <InnerLayout>
-                <h1>All Transactions</h1>
+                <h1>Dashboard</h1>
                 <div className="stats-con">
                     <div className="chart-con">
                         <div className="view-mode-buttons">
@@ -100,7 +100,7 @@ function Dashboard() {
                         </div>
                     </div>
                     <div className="history-con">
-                        <History />
+                        <History  />
                     </div>
                 </div>
             </InnerLayout>

@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { dateFormat } from '../../utils/dateFormat';
 
-function History() {
-    const {transactionHistory} = useGlobalContext()
+function AllHistory() {
+    const {allTransactions} = useGlobalContext()
 
-    const [...history] = transactionHistory()
+    const [...history] = allTransactions()
 
     return (
         <HistoryStyled>
@@ -18,7 +18,7 @@ function History() {
                         <p style={{
                             color: type === 'Expense' ? 'red' : 'green'
                         }}>
-                            {title}                   
+                            {title}                
                         </p>
                         <p> 
                             {(dateFormat(date))} 
@@ -28,7 +28,7 @@ function History() {
                             color: type === 'Expense' ? 'red' : 'green'
                         }}>
                             {
-                                type === 'Expense' ? `€ ${amount <= 0 ? 0 : amount}` : `€ ${amount <= 0 ? 0: amount}`
+                                type === 'Expense' ? `€ ${amount <= 0 ? 0 : amount}` : `€${amount <= 0 ? 0: amount}`
                             }
                         </p>
                     </div>
@@ -54,4 +54,4 @@ const HistoryStyled = styled.div`
     }
 `;
 
-export default History
+export default AllHistory
