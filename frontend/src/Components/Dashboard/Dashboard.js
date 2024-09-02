@@ -1,22 +1,44 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import History from '../History/History';
 import { InnerLayout } from '../../styles/Layout';
 import { euro } from '../../utils/Icons';
 import Chart from '../Chart/Chart';
+import moment from 'moment';
 
 function Dashboard() {
-    const {totalExpenses, incomes, expenses, totalIncome, totalBalance, getIncomes, getExpenses } = useGlobalContext()
+    const { incomes, expenses, getIncomes, getExpenses } = useGlobalContext();
 
-    const balanceStyle = {
-        color: totalBalance < 0 ? 'red' : 'green'
+    // Manage the view mode state here
+    const [viewMode, setViewMode] = useState('currentMonth');
+
+    const getTotalIncome = () => {
+        if (viewMode === 'currentMonth') {
+            const currentMonthIncomes = incomes.filter(income => moment(income.date).isSame(moment(), 'month'));
+            return currentMonthIncomes.reduce((sum, income) => sum + income.amount, 0);
+        } else {
+            return incomes.reduce((sum, income) => sum + income.amount, 0); // Full year
+        }
+    };
+
+    const getTotalExpenses = () => {
+        if (viewMode === 'currentMonth') {
+            const currentMonthExpenses = expenses.filter(expense => moment(expense.date).isSame(moment(), 'month'));
+            return currentMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+        } else {
+            return expenses.reduce((sum, expense) => sum + expense.amount, 0); // Full year
+        }
+    };
+
+    const getTotalBalance = () => {
+        return getTotalIncome() - getTotalExpenses();
     };
 
     useEffect(() => {
-        getIncomes()
-        getExpenses()
-    },[])
+        getIncomes();
+        getExpenses();
+    }, []);
 
     return (
         <DashboardStyled>
@@ -24,24 +46,28 @@ function Dashboard() {
                 <h1>All Transactions</h1>
                 <div className="stats-con">
                     <div className="chart-con">
-                        <Chart />
+                        <div className="view-mode-buttons">
+                            <button onClick={() => setViewMode('currentMonth')}>Aktueller Monat</button>
+                            <button onClick={() => setViewMode('fullYear')}>Ganzes Jahr</button>
+                        </div>
+                        <Chart viewMode={viewMode} />
                         <div className="amount-con">
                             <div className="income">
                                 <h2>Total Income</h2>
-                                <p style={{color: 'green'}}>
-                                    {euro} {totalIncome()}
+                                <p style={{ color: 'green' }}>
+                                    {euro} {getTotalIncome()}
                                 </p>
                             </div>
                             <div className="expense">
                                 <h2>Total Expense</h2>
-                                <p style={{color: 'red'}} > 
-                                    {euro} {totalExpenses()}
+                                <p style={{ color: 'red' }}>
+                                    {euro} {getTotalExpenses()}
                                 </p>
                             </div>
                             <div className="balance">
                                 <h2>Total Balance</h2>
-                                <p style={{color: totalBalance() < 0 ? 'red' : 'green'}}>
-                                    {euro} {totalBalance()}
+                                <p style={{ color: getTotalBalance() < 0 ? 'red' : 'green' }}>
+                                    {euro} {getTotalBalance()}
                                 </p>
                             </div>
                         </div>
@@ -70,7 +96,7 @@ function Dashboard() {
                 </div>
             </InnerLayout>
         </DashboardStyled>
-    )
+    );
 }
 
 const DashboardStyled = styled.div`
@@ -81,6 +107,23 @@ const DashboardStyled = styled.div`
         .chart-con{
             grid-column: 1 / 4;
             height: 400px;
+            .view-mode-buttons {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 1rem;
+                button {
+                    padding: 0.5rem 1rem;
+                    background-color: #f4f4f4;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+
+                    &:hover {
+                        background-color: #e2e2e2;
+                    }
+                }
+            }
             .amount-con{
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
@@ -146,4 +189,4 @@ const DashboardStyled = styled.div`
     }
 `;
 
-export default Dashboard
+export default Dashboard;
