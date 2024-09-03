@@ -1,20 +1,16 @@
 import styled from "styled-components";
-import AllHistory from "../History/AllHistory";
 import { InnerLayout } from "../../styles/Layout";
 
-function Transactions() {
+function RepeatByDate () {
 
-    
     return (
-        <TransactionStyled>
+        <RepeatByDateStyled>
             <InnerLayout>
-                <h1>All Transactions</h1>
-                    <div className="history-con">
-                        <AllHistory />
-                    </div>
+                <h1>Wiederholungen</h1>    
             </InnerLayout>
-        </TransactionStyled>
-    );
+        </RepeatByDateStyled>
+    )
+
 }
 
 
@@ -22,8 +18,8 @@ function Transactions() {
 
 
 
-const TransactionStyled = styled.div`
-    .stats-con{
+const RepeatByDateStyled = styled.div`
+   .stats-con{
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 2rem;
@@ -112,4 +108,4 @@ const TransactionStyled = styled.div`
     }
 `;
 
-export default Transactions;
+export default RepeatByDate;

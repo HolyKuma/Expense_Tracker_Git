@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { bitcoin, book, calender, card, circle, clothing, comment, euro, food, freelance, medical, money, piggy, stocks, takeaway, trash, trend, tv, users, yt } from '../../utils/Icons';
+import { bitcoin, book, calender, card, circle, clothing, comment, euro, food, freelance, medical, money, piggy, repeat, stocks, takeaway, trash, tv, users, yt } from '../../utils/Icons';
 import Button from '../Button/Button';
 import { dateFormat } from '../../utils/dateFormat';
 
@@ -80,7 +80,7 @@ function IncomeItem({
                     </div>
                     <div className="btn-con">
                         <Button 
-                            icon={trend}
+                            icon={repeat}
                             bPad={'1rem'}
                             bRad={'50%'}
                             bg={'var(--primary-color'}

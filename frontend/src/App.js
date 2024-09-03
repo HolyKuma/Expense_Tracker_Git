@@ -9,13 +9,14 @@ import Transactions from './Components/Transactions/Transactions';
 import Income from './Components/Income/Income';
 import Expenses from './Components/Expenses/Expenses';
 import { useGlobalContext } from "./context/globalContext";
+import RepeatByDate from './Components/RepeatByDate/RepeatByDate'
 
 function App() {
   const [active, setActive] = useState(1)
   const global = useGlobalContext ()
 
 
-//asdas
+
   const displayData= () => {
     switch(active) {
       case 1:
@@ -26,7 +27,9 @@ function App() {
         return <Income />
       case 4:
         return <Expenses />
-      default: 
+      case 5:
+        return <RepeatByDate/>
+      default:
       return <Dashboard />
     }
   }
