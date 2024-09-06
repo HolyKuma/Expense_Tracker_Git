@@ -17,6 +17,10 @@ const IncomeSchema = new mongoose.Schema({
         type: String,
         default: "Income",
     },
+    repeated: {
+        type: Boolean,
+        default: false
+    },
     date : {
         type: Date,
         required: true,

@@ -6,7 +6,7 @@ const ExpenseSchema = new mongoose.Schema({
         required: true,
         trim: true,
         maxLength: 50
-    }, //asd
+    }, 
     amount : {
         type: Number,
         required: true,
@@ -16,6 +16,10 @@ const ExpenseSchema = new mongoose.Schema({
     type: {
         type: String,
         default: "Expense",
+    },
+    repeated: {
+        type: Boolean,
+        default: false
     },
     date : {
         type: Date,

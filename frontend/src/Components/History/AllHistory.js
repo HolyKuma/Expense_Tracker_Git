@@ -1,63 +1,62 @@
-import React from 'react'
-import styled from 'styled-components'
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
 import { useGlobalContext } from '../../context/globalContext';
-import { dateFormat } from '../../utils/dateFormat';
+import { InnerLayout } from '../../styles/Layout';
+import IncomeItem from '../IncomeItem/IncomeItem';
 
 function AllHistory() {
-    const {allTransactions} = useGlobalContext()
+    const { allTransactions, getExpenses, getIncomes, deleteExpense, deleteIncome,repeatIncome, repeatExpense } = useGlobalContext();
 
-    const [...history] = allTransactions()
+    useEffect(() => {
+        getExpenses();
+        getIncomes();
+    }, []);
+
+    // Combine and sort all transactions by date
+    const history = allTransactions().sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
-        <HistoryStyled>
-            <h2>Recent History</h2>
-            {history.map((item) =>{
-                const {_id, title, amount, date, description, type} = item
-                return (
-                    <div key={_id} className="history-item">
-                        <p style={{
-                            color: type === 'Expense' ? 'red' : 'green'
-                        }}>
-                            {title}                
-                        </p>
-                        <p> 
-                            {description} 
-                        </p>
-                        <p> 
-                            {(dateFormat(date))} 
-                        </p>
-
-
-                        <p style={{
-                            color: type === 'Expense' ? 'red' : 'green'
-                        }}>
-                            {
-                                type === 'Expense' ? `€ ${amount <= 0 ? 0 : amount}` : `€${amount <= 0 ? 0: amount}`
-                            }
-                        </p>
-                    </div>
-                )
-            })}
-        </HistoryStyled>
-    )
+        <AllHistoryStyled>
+            <InnerLayout>
+                <h1>All Transactions</h1>
+                <div className="history-content">
+                    {history.map((item) => {
+                        const { _id, title, amount, date, category, description, type } = item;
+                        return (
+                            <IncomeItem
+                                key={_id}
+                                id={_id}
+                                title={title}
+                                description={description}
+                                amount={amount}
+                                date={date}
+                                type={type}
+                                category={category}
+                                indicatorColor={type === 'Expense' ? 'red' : 'green'}
+                                deleteItem={type === 'Expense' ? deleteExpense : deleteIncome}
+                                repeatItem={type === 'Expense' ? repeatExpense : repeatIncome}
+                            />
+                        );
+                    })}
+                </div>
+            </InnerLayout>
+        </AllHistoryStyled>
+    );
 }
 
-const HistoryStyled = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    .history-item{
-        background: #FCF6F9;
-        border: 2px solid #FFFFFF;
-        box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-        padding: 1rem;
-        border-radius: 20px;
-        display: grid;
-        grid-template-rows:25px;
-        grid-template-columns: 300px 500px 350px; 
-        justify-content: space-between;
-        align-items: center;
+const AllHistoryStyled = styled.div`
+    .history-content {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    h1 {
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        font-weight: bold;
     }
 `;
 
-export default AllHistory
+export default AllHistory;

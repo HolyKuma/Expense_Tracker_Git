@@ -88,8 +88,21 @@ export const GlobalProvider = ({ children }) => {
                 setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
             }
         };
+    
+    //wiederholen von Einnahmen pro Monat oder Jahr
 
+    const repeatIncomeMonthly = async (id) => {
+        try {
+            
+            ;
 
+        
+            return reapted = true;
+        }
+
+    }
+
+    
     // Abrufen der Ausgaben
     const getExpenses = async () => {
         try {
