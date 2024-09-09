@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import axios from 'axios';
 
 const BASE_URL = "http://localhost:5000/api/v1/";
@@ -10,7 +10,20 @@ export const GlobalProvider = ({ children }) => {
     const [expenses, setExpenses] = useState([]);
     const [error, setError] = useState(null);
 
-    // Abrufen der Einkommen
+
+
+    useEffect(() => {
+/*        const incomeIntervalId = setInterval(() => {
+            repeatMonthlyIncomes();
+        }, 24 * 60 *60 * 1000); // Every 24 hours
+
+        const expenseIntervalId = setInterval(() => {
+            repeatMonthlyExpenses();
+        },  24 * 60 *60 * 1000); // Every 24 hours
+*/
+
+
+
     const getIncomes = async () => {
         try {
             const response = await axios.get(`${BASE_URL}get-incomes`);
@@ -20,32 +33,28 @@ export const GlobalProvider = ({ children }) => {
         }
     };
 
-    // Hinzufügen eines Einkommens
     const addIncome = async (income) => {
         try {
             await axios.post(`${BASE_URL}add-income`, income);
-            getIncomes();
+            await getIncomes();
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
     };
 
-    // Löschen eines Einkommens
     const deleteIncome = async (id) => {
         try {
             await axios.delete(`${BASE_URL}delete-income/${id}`);
-            getIncomes();
+            await getIncomes();
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
     };
 
-    // Gesamteinkommen berechnen
     const totalIncome = () => {
         return incomes.reduce((acc, income) => acc + income.amount, 0);
     };
 
-    // Wiederholen eines Einkommens
     const repeatIncome = async (id) => {
         try {
             const incomeToRepeat = incomes.find(income => income._id === id);
@@ -62,101 +71,84 @@ export const GlobalProvider = ({ children }) => {
             };
 
             await axios.post(`${BASE_URL}add-income`, newIncome);
-            getIncomes();
+            await getIncomes();
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
     };
 
-        // Wiederholen eines Ausgaben
-        const repeatExpense = async (id) => {
-            try {
-                const expenseToRepeat = expenses.find(income => income._id === id);
-                if (!expenseToRepeat) {
-                    setError("Einkommen nicht gefunden");
-                    return;
-                }
-    
-                const newExpense = {
-                    ...expenseToRepeat,
-                    _id: String(Date.now()), // Neue ID generieren
-                    date: new Date(), // Optional: aktuelles Datum setzen
-                    repeated: false
-                };
-    
-                await axios.post(`${BASE_URL}add-expense`, newExpense);
-                getExpenses();
-            } catch (err) {
-                setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
+    const repeatExpense = async (id) => {
+        try {
+            const expenseToRepeat = expenses.find(expense => expense._id === id);
+            if (!expenseToRepeat) {
+                setError("Ausgabe nicht gefunden");
+                return;
             }
-        };
 
-    // Starte den monatlichen Wiederholungsprozess
-    setInterval(() => {
-        repeatMonthlyTransactions(); // Funktion wird täglich ausgeführt
-    }, 24 * 60 * 60 * 1000); // Alle 24 Stunden in Millisekunden
-    
-    const repeatMonthlyTransactions = async () => {
+            const newExpense = {
+                ...expenseToRepeat,
+                _id: String(Date.now()), // Neue ID generieren
+                date: new Date(), // Optional: aktuelles Datum setzen
+                repeated: false
+            };
+
+            await axios.post(`${BASE_URL}add-expense`, newExpense);
+            await getExpenses();
+        } catch (err) {
+            setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
+        }
+    };
+
+ /*   const repeatMonthlyExpenses = async () => {
         try {
             const today = new Date();
-            const todayDay = today.getDate(); // Heutiger Tag des Monats
-    
-            // Filtere die wiederkehrenden Einträge, deren Tag des Monats mit dem heutigen Tag übereinstimmt
+            const todayDay = today.getDate();
+
             const expensesToRepeat = expenses.filter(expense => expense.repeated && new Date(expense.date).getDate() === todayDay);
-    
-            // Wiederhole Ausgaben
+
             for (const expense of expensesToRepeat) {
                 const newExpense = {
                     ...expense,
                     _id: String(Date.now()), // Neue ID generieren
-                    date: today, // Setze das Datum auf das heutige Datum
+                    date: today.toISOString(), // Setze das Datum auf das heutige Datum im ISO-Format
                     repeated: false // Wiederholung stoppen
                 };
-    
-                await axios.post(`${BASE_URL}add-income`, newExpense);
-                getExpenses();
+
+                await axios.post(`${BASE_URL}add-expense`, newExpense);
             }
-    
-            console.log("Wiederkehrende Einträge wurden erfolgreich erstellt.");
+
+            await getExpenses(); // Aktualisiere die Ausgaben nach der Wiederholung
+            console.log("Wiederkehrende Ausgaben wurden erfolgreich erstellt.");
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
-    };
+    };*/
 
-        // Starte den monatlichen Wiederholungsprozess
-        setInterval(() => {
-            repeatMonthlyIncomes(); // Funktion wird täglich ausgeführt
-        }, 24 * 60 * 60 * 1000); // Alle 24 Stunden in Millisekunden
-
-    const repeatMonthlyIncomes = async () => {
+/*    const repeatMonthlyIncomes = async () => {
         try {
             const today = new Date();
-            const todayDay = today.getDate(); // Heutiger Tag des Monats
-    
-            // Filtere die wiederkehrenden Einträge, deren Tag des Monats mit dem heutigen Tag übereinstimmt
+            const todayDay = today.getDate();
+
             const incomesToRepeat = incomes.filter(income => income.repeated && new Date(income.date).getDate() === todayDay);
-    
-            // Wiederhole Einkommen
+
             for (const income of incomesToRepeat) {
                 const newIncome = {
                     ...income,
                     _id: String(Date.now()), // Neue ID generieren
-                    date: today, // Setze das Datum auf das heutige Datum
+                    date: today.toISOString(), // Setze das Datum auf das heutige Datum im ISO-Format
                     repeated: false // Wiederholung stoppen
                 };
-    
+
                 await axios.post(`${BASE_URL}add-income`, newIncome);
-                getIncomes();
             }
-            console.log("Wiederkehrende Einträge wurden erfolgreich erstellt.");
+
+            await getIncomes(); // Aktualisiere die Einnahmen nach der Wiederholung
+            console.log("Wiederkehrende Einnahmen wurden erfolgreich erstellt.");
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
-    };
-        
+    };*/
 
-    
-    // Abrufen der Ausgaben
     const getExpenses = async () => {
         try {
             const response = await axios.get(`${BASE_URL}get-expenses`);
@@ -166,37 +158,32 @@ export const GlobalProvider = ({ children }) => {
         }
     };
 
-    // Hinzufügen einer Ausgabe
     const addExpense = async (expense) => {
         try {
             await axios.post(`${BASE_URL}add-expense`, expense);
-            getExpenses();
+            await getExpenses();
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
     };
 
-    // Löschen einer Ausgabe
     const deleteExpense = async (id) => {
         try {
             await axios.delete(`${BASE_URL}delete-expense/${id}`);
-            getExpenses();
+            await getExpenses();
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
     };
 
-    // Gesamtausgaben berechnen
     const totalExpenses = () => {
         return expenses.reduce((acc, expense) => acc + expense.amount, 0);
     };
 
-    // Gesamtkontostand berechnen
     const totalBalance = () => {
         return totalIncome() - totalExpenses();
     };
 
-    // Transaktionshistorie abrufen
     const transactionHistory = () => {
         const history = [...incomes, ...expenses];
         history.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
