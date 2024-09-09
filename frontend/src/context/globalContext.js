@@ -57,7 +57,8 @@ export const GlobalProvider = ({ children }) => {
             const newIncome = {
                 ...incomeToRepeat,
                 _id: String(Date.now()), // Neue ID generieren
-                date: new Date() // Optional: aktuelles Datum setzen
+                date: new Date(), // Optional: aktuelles Datum setzen
+                repeated: false
             };
 
             await axios.post(`${BASE_URL}add-income`, newIncome);
@@ -79,7 +80,8 @@ export const GlobalProvider = ({ children }) => {
                 const newExpense = {
                     ...expenseToRepeat,
                     _id: String(Date.now()), // Neue ID generieren
-                    date: new Date() // Optional: aktuelles Datum setzen
+                    date: new Date(), // Optional: aktuelles Datum setzen
+                    repeated: false
                 };
     
                 await axios.post(`${BASE_URL}add-expense`, newExpense);
@@ -89,18 +91,51 @@ export const GlobalProvider = ({ children }) => {
             }
         };
     
-    //wiederholen von Einnahmen pro Monat oder Jahr
+// Funktion zur monatlichen Wiederholung von Ausgaben/Einnahmen
+const repeatMonthlyTransactions = async () => {
+    try {
+        // Aktualisierte Daten abrufen
+        await getIncomes();
+        await getExpenses();
 
-    const repeatIncomeMonthly = async (id) => {
-        try {
-            
-            ;
+        const today = new Date();
 
-        
-            return reapted = true;
+        // Filtere die wiederkehrenden Einträge, deren Datum heute ist
+        const incomesToRepeat = incomes.filter(income => income.repeated && new Date(income.date).getDate() === today.getDate());
+        const expensesToRepeat = expenses.filter(expense => expense.repeated && new Date(expense.date).getDate() === today.getDate());
+
+        // Wiederhole Einkommen
+        for (const income of incomesToRepeat) {
+            const newIncome = {
+                ...income,
+                _id: String(Date.now()), // Neue ID generieren
+                date: new Date(),
+                repeated: false
+            };
+            await addIncome(newIncome);
         }
 
+        // Wiederhole Ausgaben
+        for (const expense of expensesToRepeat) {
+            const newExpense = {
+                ...expense,
+                _id: String(Date.now()), // Neue ID generieren
+                date: new Date(), // Datum auf nächsten Monat setzen
+                repeated: false
+            };
+            await addExpense(newExpense);
+        }
+
+        console.log("Wiederkehrende Einträge wurden erfolgreich erstellt.");
+    } catch (err) {
+        setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
     }
+};
+
+// Starte den monatlichen Wiederholungsprozess
+setInterval(() => {
+    repeatMonthlyTransactions(); // Funktion wird täglich ausgeführt, überprüft die Daten und wiederholt monatlich
+}, 24 * 60 * 60 * 1000); // Alle 24 Stunden in Millisekunden
 
     
     // Abrufen der Ausgaben
