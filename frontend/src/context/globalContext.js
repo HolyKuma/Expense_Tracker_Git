@@ -90,52 +90,70 @@ export const GlobalProvider = ({ children }) => {
                 setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
             }
         };
+
+    // Starte den monatlichen Wiederholungsprozess
+    setInterval(() => {
+        repeatMonthlyTransactions(); // Funktion wird täglich ausgeführt
+    }, 24 * 60 * 60 * 1000); // Alle 24 Stunden in Millisekunden
     
-// Funktion zur monatlichen Wiederholung von Ausgaben/Einnahmen
-const repeatMonthlyTransactions = async () => {
-    try {
-        // Aktualisierte Daten abrufen
-        await getIncomes();
-        await getExpenses();
-
-        const today = new Date();
-
-        // Filtere die wiederkehrenden Einträge, deren Datum heute ist
-        const incomesToRepeat = incomes.filter(income => income.repeated && new Date(income.date).getDate() === today.getDate());
-        const expensesToRepeat = expenses.filter(expense => expense.repeated && new Date(expense.date).getDate() === today.getDate());
-
-        // Wiederhole Einkommen
-        for (const income of incomesToRepeat) {
-            const newIncome = {
-                ...income,
-                _id: String(Date.now()), // Neue ID generieren
-                date: new Date(),
-                repeated: false
-            };
-            await addIncome(newIncome);
+    const repeatMonthlyTransactions = async () => {
+        try {
+            const today = new Date();
+            const todayDay = today.getDate(); // Heutiger Tag des Monats
+    
+            // Filtere die wiederkehrenden Einträge, deren Tag des Monats mit dem heutigen Tag übereinstimmt
+            const expensesToRepeat = expenses.filter(expense => expense.repeated && new Date(expense.date).getDate() === todayDay);
+    
+            // Wiederhole Ausgaben
+            for (const expense of expensesToRepeat) {
+                const newExpense = {
+                    ...expense,
+                    _id: String(Date.now()), // Neue ID generieren
+                    date: today, // Setze das Datum auf das heutige Datum
+                    repeated: false // Wiederholung stoppen
+                };
+    
+                await axios.post(`${BASE_URL}add-income`, newExpense);
+                getExpenses();
+            }
+    
+            console.log("Wiederkehrende Einträge wurden erfolgreich erstellt.");
+        } catch (err) {
+            setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
+    };
 
-        // Wiederhole Ausgaben
-        for (const expense of expensesToRepeat) {
-            const newExpense = {
-                ...expense,
-                _id: String(Date.now()), // Neue ID generieren
-                date: new Date(), // Datum auf nächsten Monat setzen
-                repeated: false
-            };
-            await addExpense(newExpense);
+        // Starte den monatlichen Wiederholungsprozess
+        setInterval(() => {
+            repeatMonthlyIncomes(); // Funktion wird täglich ausgeführt
+        }, 24 * 60 * 60 * 1000); // Alle 24 Stunden in Millisekunden
+
+    const repeatMonthlyIncomes = async () => {
+        try {
+            const today = new Date();
+            const todayDay = today.getDate(); // Heutiger Tag des Monats
+    
+            // Filtere die wiederkehrenden Einträge, deren Tag des Monats mit dem heutigen Tag übereinstimmt
+            const incomesToRepeat = incomes.filter(income => income.repeated && new Date(income.date).getDate() === todayDay);
+    
+            // Wiederhole Einkommen
+            for (const income of incomesToRepeat) {
+                const newIncome = {
+                    ...income,
+                    _id: String(Date.now()), // Neue ID generieren
+                    date: today, // Setze das Datum auf das heutige Datum
+                    repeated: false // Wiederholung stoppen
+                };
+    
+                await axios.post(`${BASE_URL}add-income`, newIncome);
+                getIncomes();
+            }
+            console.log("Wiederkehrende Einträge wurden erfolgreich erstellt.");
+        } catch (err) {
+            setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
-
-        console.log("Wiederkehrende Einträge wurden erfolgreich erstellt.");
-    } catch (err) {
-        setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
-    }
-};
-
-// Starte den monatlichen Wiederholungsprozess
-setInterval(() => {
-    repeatMonthlyTransactions(); // Funktion wird täglich ausgeführt, überprüft die Daten und wiederholt monatlich
-}, 24 * 60 * 60 * 1000); // Alle 24 Stunden in Millisekunden
+    };
+        
 
     
     // Abrufen der Ausgaben

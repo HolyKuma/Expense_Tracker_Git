@@ -1,40 +1,46 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import DatePicker from 'react-datepicker'
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useGlobalContext } from '../../context/globalContext';
 import Button from '../Button/Button';
 import { plus, repeat } from '../../utils/Icons';
-
+import Switch from 'react-switch';
 
 function ExpenseForm() {
-    const {addExpense, error, setError} = useGlobalContext()
+    const { addExpense, error, setError } = useGlobalContext();
     const [inputState, setInputState] = useState({
         title: 'Groceries',
         amount: '',
-        date: new Date (),
+        date: new Date(),
+        repeated: false,
         category: 'groceries',
         description: '',
-    })
+    });
 
-    const { title, amount, date, category, description } = inputState;
+    const { title, amount, date, category, description, repeated } = inputState;
 
     const handleInput = name => e => {
-        setInputState({...inputState, [name]: e.target.value})
-        setError('')
-    }
+        setInputState({ ...inputState, [name]: e.target.value });
+        setError('');
+    };
+
+    const handleSwitchChange = (checked) => {
+        setInputState({ ...inputState, repeated: checked });
+    };
 
     const handleSubmit = e => {
-        e.preventDefault()
-        addExpense(inputState)
+        e.preventDefault();
+        addExpense(inputState);
         setInputState({
             title: 'Groceries',
             amount: '',
-            date: new Date (),
+            date: new Date(),
+            repeated: false,
             category: 'groceries',
             description: '',
-        })
-    }
+        });
+    };
 
     return (
         <ExpenseFormStyled onSubmit={handleSubmit}>
@@ -49,7 +55,8 @@ function ExpenseForm() {
                 />
             </div>
             <div className="input-control">
-                <input value={amount}  
+                <input 
+                    value={amount}  
                     type="text" 
                     name={'amount'} 
                     placeholder={'Expense Amount'}
@@ -63,13 +70,19 @@ function ExpenseForm() {
                     selected={date}
                     dateFormat="dd/MM/yyyy"
                     onChange={(date) => {
-                        setInputState({...inputState, date: date})
+                        setInputState({ ...inputState, date: date });
                     }}
                 />
             </div>
             <div className="selects input-control">
-                <select required value={category} name="category" id="category" onChange={handleInput('category')}>
-                    <option value="" disabled >Select Option</option>
+                <select 
+                    required 
+                    value={category} 
+                    name="category" 
+                    id="category" 
+                    onChange={handleInput('category')}
+                >
+                    <option value="" disabled>Select Option</option>
                     <option value="education">Education</option>
                     <option value="groceries">Groceries</option>
                     <option value="health">Health</option>
@@ -81,7 +94,31 @@ function ExpenseForm() {
                 </select>
             </div>
             <div className="input-control">
-                <textarea name="description" value={description} placeholder='Add A Reference' id="description" cols="30" rows="4" onChange={handleInput('description')}></textarea>
+                <textarea 
+                    name="description" 
+                    value={description} 
+                    placeholder='Add A Reference' 
+                    id="description" 
+                    cols="30" 
+                    rows="4" 
+                    onChange={handleInput('description')}
+                ></textarea>
+            </div>
+            <div className="input-control switch-control">
+                <label>
+                    <span>Wiederholen</span>
+                    <Switch 
+                        onChange={handleSwitchChange} 
+                        checked={repeated} 
+                        offColor="#ccc"
+                        onColor="#86d3ff"
+                        handleDiameter={20} /* Smaller diameter for the switch handle */
+                        uncheckedIcon={false}
+                        checkedIcon={false}
+                        height={15} /* Reduced height */
+                        width={40} /* Reduced width */
+                    />
+                </label>
             </div>
             <div className="submit-btn">
                 <Button 
@@ -94,15 +131,14 @@ function ExpenseForm() {
                 />
             </div>
         </ExpenseFormStyled>
-    )
+    );
 }
-
 
 const ExpenseFormStyled = styled.form`
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    input, textarea, select{
+    input, textarea, select {
         font-family: inherit;
         font-size: inherit;
         outline: none;
@@ -114,34 +150,47 @@ const ExpenseFormStyled = styled.form`
         resize: none;
         box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
         color: rgba(34, 34, 96, 0.9);
-        &::placeholder{
+        &::placeholder {
             color: rgba(34, 34, 96, 0.4);
         }
     }
-    .input-control{
-        input{
+    .input-control {
+        input {
             width: 100%;
         }
     }
-
-    .selects{
+    .selects {
         display: flex;
         justify-content: flex-end;
-        select{
+        select {
             color: rgba(34, 34, 96, 0.4);
-            &:focus, &:active{
+            &:focus, &:active {
                 color: rgba(34, 34, 96, 1);
             }
         }
     }
-
-    .submit-btn{
-        button{
+    .submit-btn {
+        button {
             box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-            &:hover{
+            &:hover {
                 background: green !important;
             }
         }
     }
+    .switch-control {
+        display: flex;
+        align-items: center;
+        gap: 2rem; /* Increased space between text and switch */
+        span {
+            font-size: 1rem;
+            color: rgba(34, 34, 96, 0.9);
+            font-weight: 500;
+        }
+        label {
+            display: flex;
+            align-items: center; /* Ensures text and switch are vertically aligned */
+        }
+    }
 `;
-export default ExpenseForm
+
+export default ExpenseForm;
