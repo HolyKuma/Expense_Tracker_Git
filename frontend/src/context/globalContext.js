@@ -13,16 +13,20 @@ export const GlobalProvider = ({ children }) => {
 
 
     useEffect(() => {
-/*        const incomeIntervalId = setInterval(() => {
+        const incomeIntervalId = setInterval(() => {
             repeatMonthlyIncomes();
         }, 24 * 60 *60 * 1000); // Every 24 hours
 
         const expenseIntervalId = setInterval(() => {
             repeatMonthlyExpenses();
         },  24 * 60 *60 * 1000); // Every 24 hours
-*/
 
-
+        // besser auf Server Seite das Interval bestimmten und einleiten.
+        return () => {
+            clearInterval(incomeIntervalId);
+            clearInterval(expenseIntervalId);
+        };
+    }, [incomes, expenses]);
 
     const getIncomes = async () => {
         try {
@@ -99,7 +103,7 @@ export const GlobalProvider = ({ children }) => {
         }
     };
 
- /*   const repeatMonthlyExpenses = async () => {
+    const repeatMonthlyExpenses = async () => {
         try {
             const today = new Date();
             const todayDay = today.getDate();
@@ -122,9 +126,9 @@ export const GlobalProvider = ({ children }) => {
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
-    };*/
+    };
 
-/*    const repeatMonthlyIncomes = async () => {
+    const repeatMonthlyIncomes = async () => {
         try {
             const today = new Date();
             const todayDay = today.getDate();
@@ -147,7 +151,7 @@ export const GlobalProvider = ({ children }) => {
         } catch (err) {
             setError(err.response?.data?.message || "Ein Fehler ist aufgetreten");
         }
-    };*/
+    };
 
     const getExpenses = async () => {
         try {

@@ -7,7 +7,6 @@ const app = express()
 
 
 require('dotenv').config()
-require('./recurringTasks');
 
 
 
