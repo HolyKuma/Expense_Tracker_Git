@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "csv": "^6.3.10",
     "node-cron": "^3.0.3",
-    "react-switch": "^7.0.0"
+    "react-switch": "^7.0.0",
+    "sqlite3": "^5.1.7"
   }
 }
