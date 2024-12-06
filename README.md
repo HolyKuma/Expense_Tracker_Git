@@ -1,7 +1,7 @@
-#Expense_Tracker_git
+#Expense_Tracker_Git
 
-This project is based on an online tutorial from YouTube and was used for practice purposes to understand and implement methodes in combination with the React-Framework. 
+This project is based on an online YouTube tutorial and was used for practice purposes to understand and implement various methods in combination with the React framework.
 
-Many functions has been implemented by myself and are not based on the Video. 
+Many functions were independently implemented by me and are not based on the tutorial.
 
-TeckStack: MERN 
+Tech Stack: MERN
